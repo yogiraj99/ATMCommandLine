@@ -1,44 +1,52 @@
+import exception.DifferentUserLoggedInException;
 import exception.UserNotLoggedInException;
 import lombok.Getter;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Objects;
 
 public class ATM {
 
     private final HashMap<String, User> users;
     @Getter
-    private final HashSet<String> loggedInUsers;
+    private User loggedInUser;
 
     ATM() {
         this.users = new HashMap<>();
-        this.loggedInUsers = new HashSet<>();
     }
 
-    public User loginUser(String username) {
-        if (this.users.containsKey(username)) {
-            return getUser(username);
+    public User loginUser(String username) throws DifferentUserLoggedInException {
+        if (Objects.isNull(this.loggedInUser)) {
+            return this.users.containsKey(username) ? getUser(username) : createNewUser(username);
         }
-        return createNewUser(username);
+        if (Objects.equals(this.loggedInUser.getUsername(), username)) {
+            return this.loggedInUser;
+        }
+        throw new DifferentUserLoggedInException();
+
     }
 
     private User getUser(String username) {
-        loggedInUsers.add(username);
-        return this.users.get(username);
+        User user = this.users.get(username);
+        this.loggedInUser = user;
+        return user;
     }
 
     private User createNewUser(String username) {
         User user = new User(username);
-        loggedInUsers.add(username);
+        this.loggedInUser = user;
         this.users.put(username, user);
         return user;
     }
 
-    public User logoutUser(String username) throws UserNotLoggedInException {
-        if (this.loggedInUsers.contains(username)) {
-            this.loggedInUsers.remove(username);
+    public User logoutUser(String username) throws UserNotLoggedInException, DifferentUserLoggedInException {
+        if (Objects.isNull(this.loggedInUser)) {
+            throw new UserNotLoggedInException();
+        }
+        if (Objects.equals(this.loggedInUser.getUsername(), username)) {
+            this.loggedInUser = null;
             return this.users.get(username);
         }
-        throw new UserNotLoggedInException();
+        throw new DifferentUserLoggedInException();
     }
 }

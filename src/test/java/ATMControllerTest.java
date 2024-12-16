@@ -1,8 +1,10 @@
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class ATMControllerTest {
 
+    @SneakyThrows
     @Test
     void shouldSayHelloWhenUserLogin() {
         String username = "newUser";
@@ -19,6 +21,7 @@ class ATMControllerTest {
         Mockito.verify(mockDisplay).sayHello(mockedUser);
     }
 
+    @SneakyThrows
     @Test
     void shouldSayGoodByeWhenUserLogout() {
         String username = "newUser";
@@ -26,12 +29,12 @@ class ATMControllerTest {
         ATM mockATM = Mockito.mock(ATM.class);
         Display mockDisplay = Mockito.mock(Display.class);
 
-        Mockito.when(mockATM.loginUser(username)).thenReturn(mockedUser);
+        Mockito.when(mockATM.logoutUser(username)).thenReturn(mockedUser);
 
         ATMController atmController = new ATMController(mockATM, mockDisplay);
-        atmController.loginUser(username);
+        atmController.logoutUser(username);
 
-        Mockito.verify(mockATM).loginUser(username);
-        Mockito.verify(mockDisplay).sayHello(mockedUser);
+        Mockito.verify(mockATM).logoutUser(username);
+        Mockito.verify(mockDisplay).sayGoodBye(mockedUser);
     }
 }
