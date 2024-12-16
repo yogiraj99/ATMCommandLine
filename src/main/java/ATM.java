@@ -34,9 +34,10 @@ public class ATM {
         return user;
     }
 
-    public boolean logoutUser(String username) throws UserNotLoggedInException {
+    public User logoutUser(String username) throws UserNotLoggedInException {
         if (this.loggedInUsers.contains(username)) {
-            return this.loggedInUsers.remove(username);
+            this.loggedInUsers.remove(username);
+            return this.users.get(username);
         }
         throw new UserNotLoggedInException();
     }
