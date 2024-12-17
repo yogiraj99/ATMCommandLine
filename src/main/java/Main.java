@@ -4,24 +4,23 @@ import java.util.Scanner;
 
 @Slf4j
 public class Main {
-    private static String commandInfo = """
-            ## Commands
-            * `login [name]` - Logs in as this customer and creates the customer if not exist
-            * `deposit [amount]` - Deposits this amount to the logged in customer
-            * `withdraw [amount]` - Withdraws this amount from the logged in customer
-            * `transfer [target] [amount]` - Transfers this amount from the logged in customer to the target customer
-            * `logout` - Logs out of the current customer
-            * `exit` - Exits program
-            """;
 
     public static void main(String[] args) {
         ATM atm = new ATM();
         Display display = new Display(System.out);
         ATMController atmController = new ATMController(atm, display);
+        String commandInfo = """
+                ## Commands
+                * `login [name]` - Logs in as this customer and creates the customer if not exist
+                * `deposit [amount]` - Deposits this amount to the logged in customer
+                * `withdraw [amount]` - Withdraws this amount from the logged in customer
+                * `transfer [target] [amount]` - Transfers this amount from the logged in customer to the target customer
+                * `logout` - Logs out of the current customer
+                * `exit` - Exits program
+                """;
         System.out.println(commandInfo);
 
         while (true) {
-            System.out.println("Waiting for your input\n");
             Scanner scanner = new Scanner(System.in);
             String command = scanner.next();
             switch (command) {
@@ -33,8 +32,7 @@ public class Main {
                     atmController.loginCustomer(customerToLogin);
                     break;
                 case "logout":
-                    String customerToLogout = scanner.next();
-                    atmController.logoutCustomer(customerToLogout);
+                    atmController.logoutCustomer();
                     System.out.println();
                     break;
                 case "deposit":

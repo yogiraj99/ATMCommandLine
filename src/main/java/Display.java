@@ -24,4 +24,8 @@ public class Display {
     public void showBalance(int balance) {
         printStream.println("Your balance is $" + balance);
     }
+
+    public void showTransferMessage(int amountToTransfer, String transferTo) {
+        printStream.println("Transferred " + amountToTransfer + " to " + transferTo);
+    }
 }

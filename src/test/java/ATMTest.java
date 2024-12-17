@@ -40,7 +40,7 @@ class ATMTest {
 
         assertDoesNotThrow(() -> {
             Customer existingCustomer = atm.loginCustomer(customerName);
-            atm.logoutCustomer(customerName);
+            atm.logoutCustomer();
             assertEquals(existingCustomer, atm.loginCustomer(customerName));
             assertEquals(atm.getLoggedInCustomer().getCustomerName(), customerName);
         });
@@ -54,24 +54,14 @@ class ATMTest {
         assertDoesNotThrow(() -> atm.loginCustomer(customerName));
 
         Customer expectedCustomer = new Customer(customerName);
-        assertDoesNotThrow(() -> assertEquals(expectedCustomer, atm.logoutCustomer(customerName)));
+        assertDoesNotThrow(() -> assertEquals(expectedCustomer, atm.logoutCustomer()));
         assertNull(atm.getLoggedInCustomer());
     }
 
     @Test
     void shouldThrowWhenLoggingOutWithoutLogin() {
-        String customerName = "ExistingCustomer";
         ATM atm = new ATM();
-        assertThrows(CustomerNotLoggedInException.class, () -> atm.logoutCustomer(customerName));
-    }
-
-    @Test
-    void shouldThrowWhenDifferentCustomerTriesToLogout() {
-        String customerName = "ExistingCustomer";
-        String differentcustomerName = "DifferentCustomer";
-        ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
-        assertThrows(DifferentCustomerLoggedInException.class, () -> atm.logoutCustomer(differentcustomerName));
+        assertThrows(CustomerNotLoggedInException.class, atm::logoutCustomer);
     }
 
     @Test
@@ -198,10 +188,10 @@ class ATMTest {
         assertDoesNotThrow(() -> {
             atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
-            atm.logoutCustomer(customerName);
+            atm.logoutCustomer();
 
             atm.loginCustomer(anotherCustomerName);
-            atm.logoutCustomer(anotherCustomerName);
+            atm.logoutCustomer();
 
             atm.loginCustomer(customerName);
             atm.transferMoney(amountToTransfer, anotherCustomerName);

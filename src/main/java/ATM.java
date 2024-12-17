@@ -43,15 +43,13 @@ public class ATM {
         return customer;
     }
 
-    public Customer logoutCustomer(String customerName) throws CustomerNotLoggedInException, DifferentCustomerLoggedInException {
+    public Customer logoutCustomer() throws CustomerNotLoggedInException, DifferentCustomerLoggedInException {
         if (Objects.isNull(this.loggedInCustomer)) {
             throw new CustomerNotLoggedInException();
         }
-        if (Objects.equals(this.loggedInCustomer.getCustomerName(), customerName)) {
-            this.loggedInCustomer = null;
-            return this.customers.get(customerName);
-        }
-        throw new DifferentCustomerLoggedInException();
+        Customer customer = this.loggedInCustomer;
+        this.loggedInCustomer = null;
+        return customer;
     }
 
     public int deposit(int amountToDeposit) throws CustomerNotLoggedInException, InvalidAmountException {
@@ -77,11 +75,10 @@ public class ATM {
         return this.loggedInCustomer.decreaseBalance(amountToWithdraw);
     }
 
-    public void transferMoney(int amountToTransfer, String transferTo) throws InvalidAmountException, CustomerNotLoggedInException, NotEnoughBalanceException, CustomerDoesNotExistException {
+    public int transferMoney(int amountToTransfer, String transferTo) throws InvalidAmountException, CustomerNotLoggedInException, NotEnoughBalanceException, CustomerDoesNotExistException {
         if (this.customers.containsKey(transferTo)) {
-            this.withdraw(amountToTransfer);
             this.customers.get(transferTo).increaseBalance(amountToTransfer);
-            return;
+            return this.withdraw(amountToTransfer);
         }
         throw new CustomerDoesNotExistException();
     }

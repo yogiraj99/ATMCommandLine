@@ -37,9 +37,9 @@ public class ATMController {
         }
     }
 
-    public void logoutCustomer(String customerName) {
+    public void logoutCustomer() {
         try {
-            Customer customer = atm.logoutCustomer(customerName);
+            Customer customer = atm.logoutCustomer();
             display.sayGoodBye(customer);
         } catch (CustomerNotLoggedInException e) {
             log.warn("[ATMController] Could not logout as customer has not logged in");
@@ -50,6 +50,7 @@ public class ATMController {
 
     public int depositMoney(int moneyToDeposit) {
         try {
+            // need to check if owed to anyone
             int balance = atm.deposit(moneyToDeposit);
             display.showBalance(balance);
             return balance;
@@ -78,12 +79,15 @@ public class ATMController {
 
     public void transferMoney(int amountToTransfer, String transferTo) {
         try {
-            atm.transferMoney(amountToTransfer, transferTo);
+            int balance = atm.transferMoney(amountToTransfer, transferTo);
+            display.showTransferMessage(amountToTransfer,transferTo);
+            display.showBalance(balance);
         } catch (InvalidAmountException e) {
             warnInvalidAmount("transfer");
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("transfer");
         } catch (NotEnoughBalanceException e) {
+            // transfer everything in account and owe the rest
             logNotEnoughBalance("transfer");
         } catch (CustomerDoesNotExistException e) {
             log.warn("[ATMController] Could not transfer money as customer does not exist");

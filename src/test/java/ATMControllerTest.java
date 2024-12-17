@@ -1,4 +1,3 @@
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 class ATMControllerTest {
     private static final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -44,7 +42,7 @@ class ATMControllerTest {
 
         ATMController atmController = new ATMController(atm, mockDisplay);
         atmController.loginCustomer(customerName);
-        atmController.logoutCustomer(customerName);
+        atmController.logoutCustomer();
 
         Mockito.verify(mockDisplay).sayHello(customer);
         Mockito.verify(mockDisplay).sayGoodBye(customer);
@@ -199,11 +197,11 @@ class ATMControllerTest {
         ATMController atmController = new ATMController(atm, display);
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.depositMoney(firstCustomerMoneyToDeposit);
-        assertDoesNotThrow(() -> atmController.logoutCustomer(customerName));
+        assertDoesNotThrow(() -> atmController.logoutCustomer());
 
         assertDoesNotThrow(() -> atmController.loginCustomer(secondCustomerName));
         atmController.depositMoney(secondCustomerMoneyToDeposit);
-        assertDoesNotThrow(() -> atmController.logoutCustomer(secondCustomerName));
+        assertDoesNotThrow(() -> atmController.logoutCustomer());
 
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.transferMoney(amountToTransfer, secondCustomerName);
