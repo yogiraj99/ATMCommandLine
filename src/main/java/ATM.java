@@ -1,4 +1,6 @@
 import exception.DifferentUserLoggedInException;
+import exception.InvalidAmountException;
+import exception.NotEnoughBalanceException;
 import exception.UserNotLoggedInException;
 import lombok.Getter;
 
@@ -7,6 +9,7 @@ import java.util.Objects;
 
 public class ATM {
 
+    // change to customers
     private final HashMap<String, User> users;
     @Getter
     private User loggedInUser;
@@ -48,5 +51,28 @@ public class ATM {
             return this.users.get(username);
         }
         throw new DifferentUserLoggedInException();
+    }
+
+    public int deposit(int amountToDeposit) throws UserNotLoggedInException, InvalidAmountException {
+        if (Objects.isNull(this.loggedInUser)) {
+            throw new UserNotLoggedInException();
+        }
+        if (amountToDeposit < 1) {
+            throw new InvalidAmountException();
+        }
+        return this.loggedInUser.increaseBalance(amountToDeposit);
+    }
+
+    public int withdraw(int amountToWithdraw) throws UserNotLoggedInException, InvalidAmountException, NotEnoughBalanceException {
+        if (Objects.isNull(this.loggedInUser)) {
+            throw new UserNotLoggedInException();
+        }
+        if (amountToWithdraw < 1) {
+            throw new InvalidAmountException();
+        }
+        if (amountToWithdraw > this.loggedInUser.getBalance()) {
+            throw new NotEnoughBalanceException();
+        }
+        return this.loggedInUser.decreaseBalance(amountToWithdraw);
     }
 }

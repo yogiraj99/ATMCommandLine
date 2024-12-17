@@ -1,9 +1,19 @@
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Data
-@AllArgsConstructor
+@Getter
+@RequiredArgsConstructor
+@EqualsAndHashCode
 public class User {
-    private String username;
+    private final String username;
+    private int balance;
+
+    public int increaseBalance(int amountToIncrease) {
+        return this.balance += amountToIncrease;
+    }
+
+    public int decreaseBalance(int amountToDecrease) {
+        return this.balance -= amountToDecrease;
+    }
 }
