@@ -31,6 +31,7 @@ public class ATMController {
         try {
             Customer customer = atm.loginCustomer(customerName);
             display.sayHello(customer);
+            display.showBalance(customer);
         } catch (DifferentCustomerLoggedInException e) {
             log.warn("[ATMController] Could not login as different customer is logged in already");
         }
@@ -49,7 +50,9 @@ public class ATMController {
 
     public int depositMoney(int moneyToDeposit) {
         try {
-            return atm.deposit(moneyToDeposit);
+            int balance = atm.deposit(moneyToDeposit);
+            display.showBalance(balance);
+            return balance;
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("deposit");
         } catch (InvalidAmountException e) {
@@ -60,7 +63,9 @@ public class ATMController {
 
     public int withdrawMoney(int amountToWithdraw) {
         try {
-            return atm.withdraw(amountToWithdraw);
+            int balance = atm.withdraw(amountToWithdraw);
+            display.showBalance(balance);
+            return balance;
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("withdraw");
         } catch (InvalidAmountException e) {

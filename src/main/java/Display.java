@@ -16,4 +16,12 @@ public class Display {
     public void sayGoodBye(Customer customer) {
         printStream.println("Goodbye, " + customer.getCustomerName());
     }
+
+    public void showBalance(Customer customer) {
+        printStream.println("Your balance is $" + customer.getBalance());
+    }
+
+    public void showBalance(int balance) {
+        printStream.println("Your balance is $" + balance);
+    }
 }

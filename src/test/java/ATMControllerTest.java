@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 class ATMControllerTest {
@@ -23,28 +24,30 @@ class ATMControllerTest {
     @Test
     void shouldSayHelloWhenCustomerLogin() {
         String customerName = "newCustomer";
-        ATM mockATM = new ATM();
-        PrintStream printStream = Mockito.mock(PrintStream.class);
-        Display display = new Display(printStream);
+        Customer customer = new Customer(customerName);
+        ATM atm = new ATM();
+        Display mockDisplay = Mockito.mock(Display.class);
 
-        ATMController atmController = new ATMController(mockATM, display);
+        ATMController atmController = new ATMController(atm, mockDisplay);
         atmController.loginCustomer(customerName);
 
-        Mockito.verify(printStream).println(anyString());
+        Mockito.verify(mockDisplay).sayHello(customer);
+        Mockito.verify(mockDisplay).showBalance(customer);
     }
 
     @Test
     void shouldSayGoodByeWhenCustomerLogout() {
         String customerName = "newCustomer";
+        Customer customer = new Customer(customerName);
         ATM atm = new ATM();
-        PrintStream printStream = Mockito.mock(PrintStream.class);
-        Display display = new Display(printStream);
+        Display mockDisplay = Mockito.mock(Display.class);
 
-        ATMController atmController = new ATMController(atm, display);
+        ATMController atmController = new ATMController(atm, mockDisplay);
         atmController.loginCustomer(customerName);
         atmController.logoutCustomer(customerName);
 
-        Mockito.verify(printStream, Mockito.times(2)).println(anyString());
+        Mockito.verify(mockDisplay).sayHello(customer);
+        Mockito.verify(mockDisplay).sayGoodBye(customer);
     }
 
     @Test
@@ -52,9 +55,8 @@ class ATMControllerTest {
         String customerName = "newCustomer";
         int moneyToDeposit = 567;
         ATM atm = new ATM();
-        PrintStream printStream = Mockito.mock(PrintStream.class);
-        Display display = new Display(printStream);
-        ATMController atmController = new ATMController(atm, display);
+        Display mockDisplay = Mockito.mock(Display.class);
+        ATMController atmController = new ATMController(atm, mockDisplay);
 
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
 
@@ -65,7 +67,8 @@ class ATMControllerTest {
         int actualMoneyDeposited = atmController.depositMoney(moneyToDeposit);
         assertEquals(totalMoneyToDeposit, actualMoneyDeposited);
 
-        Mockito.verify(printStream).println(anyString());
+        Mockito.verify(mockDisplay).sayHello(any());
+        Mockito.verify(mockDisplay).showBalance(moneyDeposited);
     }
 
     @Test
@@ -112,15 +115,18 @@ class ATMControllerTest {
         int moneyToDeposit = 567;
         int moneyToWithdraw = 48;
         ATM atm = new ATM();
-        PrintStream printStream = Mockito.mock(PrintStream.class);
-        Display display = new Display(printStream);
-        ATMController atmController = new ATMController(atm, display);
+        Display mockDisplay = Mockito.mock(Display.class);
+        ATMController atmController = new ATMController(atm, mockDisplay);
 
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.depositMoney(moneyToDeposit);
-        assertEquals(moneyToDeposit - moneyToWithdraw, atmController.withdrawMoney(moneyToWithdraw));
 
-        Mockito.verify(printStream).println(anyString());
+        int remainingAmount = moneyToDeposit - moneyToWithdraw;
+        assertEquals(remainingAmount, atmController.withdrawMoney(moneyToWithdraw));
+
+        Mockito.verify(mockDisplay).sayHello(any());
+        Mockito.verify(mockDisplay).showBalance(moneyToDeposit);
+        Mockito.verify(mockDisplay).showBalance(remainingAmount);
     }
 
     @Test

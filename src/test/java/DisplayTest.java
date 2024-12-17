@@ -27,4 +27,26 @@ class DisplayTest {
         Mockito.verify(mockPrintStream).println("Goodbye, " + customerName);
     }
 
+    @Test
+    void shouldShowBalanceOfCustomer() {
+        int balance = 320;
+        Customer customer = Mockito.mock(Customer.class);
+        Mockito.when(customer.getBalance()).thenReturn(balance);
+        PrintStream mockPrintStream = Mockito.mock(PrintStream.class);
+        Display display = new Display(mockPrintStream);
+        display.showBalance(customer);
+
+        Mockito.verify(mockPrintStream).println("Your balance is $" + balance);
+    }
+
+    @Test
+    void shouldShowBalance() {
+        int balance = 320;
+        PrintStream mockPrintStream = Mockito.mock(PrintStream.class);
+        Display display = new Display(mockPrintStream);
+        display.showBalance(balance);
+
+        Mockito.verify(mockPrintStream).println("Your balance is $" + balance);
+    }
+
 }
