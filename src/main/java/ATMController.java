@@ -27,14 +27,24 @@ public class ATMController {
         log.warn("[ATMController] Could not {} money as customer does not have enough balance", action);
     }
 
-    public void loginCustomer(String customerName) throws DifferentCustomerLoggedInException {
-        Customer customer = atm.loginCustomer(customerName);
-        display.sayHello(customer);
+    public void loginCustomer(String customerName) {
+        try {
+            Customer customer = atm.loginCustomer(customerName);
+            display.sayHello(customer);
+        } catch (DifferentCustomerLoggedInException e) {
+            log.warn("[ATMController] Could not login as different customer is logged in already");
+        }
     }
 
-    public void logoutCustomer(String customerName) throws CustomerNotLoggedInException, DifferentCustomerLoggedInException {
-        Customer customer = atm.logoutCustomer(customerName);
-        display.sayGoodBye(customer);
+    public void logoutCustomer(String customerName) {
+        try {
+            Customer customer = atm.logoutCustomer(customerName);
+            display.sayGoodBye(customer);
+        } catch (CustomerNotLoggedInException e) {
+            log.warn("[ATMController] Could not logout as customer has not logged in");
+        } catch (DifferentCustomerLoggedInException e) {
+            log.warn("[ATMController] Could not logout as different customer is logged in already");
+        }
     }
 
     public int depositMoney(int moneyToDeposit) {

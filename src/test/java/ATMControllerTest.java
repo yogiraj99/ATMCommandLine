@@ -20,7 +20,6 @@ class ATMControllerTest {
         System.setErr(printStream);
     }
 
-    @SneakyThrows
     @Test
     void shouldSayHelloWhenCustomerLogin() {
         String customerName = "newCustomer";
@@ -34,7 +33,6 @@ class ATMControllerTest {
         Mockito.verify(printStream).println(anyString());
     }
 
-    @SneakyThrows
     @Test
     void shouldSayGoodByeWhenCustomerLogout() {
         String customerName = "newCustomer";
