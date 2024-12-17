@@ -6,25 +6,25 @@ import java.io.PrintStream;
 class DisplayTest {
 
     @Test
-    void shouldSayHelloUser() {
-        String username = "newUser";
-        User user = new User(username);
+    void shouldSayHelloCustomer() {
+        String customerName = "newCustomer";
+        Customer customer = new Customer(customerName);
         PrintStream mockPrintStream = Mockito.mock(PrintStream.class);
         Display display = new Display(mockPrintStream);
-        display.sayHello(user);
+        display.sayHello(customer);
 
-        Mockito.verify(mockPrintStream).println("Hello, " + username);
+        Mockito.verify(mockPrintStream).println("Hello, " + customerName);
     }
 
     @Test
-    void shouldSayGoodByeUser() {
-        String username = "newUser";
-        User user = new User(username);
+    void shouldSayGoodByeCustomer() {
+        String customerName = "newCustomer";
+        Customer customer = new Customer(customerName);
         PrintStream mockPrintStream = Mockito.mock(PrintStream.class);
         Display display = new Display(mockPrintStream);
-        display.sayGoodBye(user);
+        display.sayGoodBye(customer);
 
-        Mockito.verify(mockPrintStream).println("Goodbye, " + username);
+        Mockito.verify(mockPrintStream).println("Goodbye, " + customerName);
     }
 
 }

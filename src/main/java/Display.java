@@ -9,11 +9,11 @@ public class Display {
 
     private final PrintStream printStream;
 
-    public void sayHello(User user) {
-        printStream.println("Hello, " + user.getUsername());
+    public void sayHello(Customer customer) {
+        printStream.println("Hello, " + customer.getCustomerName());
     }
 
-    public void sayGoodBye(User user) {
-        printStream.println("Goodbye, " + user.getUsername());
+    public void sayGoodBye(Customer customer) {
+        printStream.println("Goodbye, " + customer.getCustomerName());
     }
 }

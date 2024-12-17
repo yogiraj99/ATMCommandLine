@@ -1,7 +1,7 @@
-import exception.DifferentUserLoggedInException;
+import exception.DifferentCustomerLoggedInException;
 import exception.InvalidAmountException;
 import exception.NotEnoughBalanceException;
-import exception.UserNotLoggedInException;
+import exception.CustomerNotLoggedInException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,29 +14,29 @@ public class ATMController {
     private final ATM atm;
     private final Display display;
 
-    public void loginUser(String username) throws DifferentUserLoggedInException {
-        User user = atm.loginUser(username);
-        display.sayHello(user);
+    public void loginCustomer(String customerName) throws DifferentCustomerLoggedInException {
+        Customer customer = atm.loginCustomer(customerName);
+        display.sayHello(customer);
     }
 
-    public void logoutUser(String username) throws UserNotLoggedInException, DifferentUserLoggedInException {
-        User user = atm.logoutUser(username);
-        display.sayGoodBye(user);
+    public void logoutCustomer(String customerName) throws CustomerNotLoggedInException, DifferentCustomerLoggedInException {
+        Customer customer = atm.logoutCustomer(customerName);
+        display.sayGoodBye(customer);
     }
 
     public int depositMoney(int moneyToDeposit) {
         try {
             return atm.deposit(moneyToDeposit);
-        } catch (UserNotLoggedInException e) {
-            warnUserNotLoggedIn();
+        } catch (CustomerNotLoggedInException e) {
+            warnCustomerNotLoggedIn();
         } catch (InvalidAmountException e) {
             warnInvalidAmount();
         }
         return 0;
     }
 
-    private void warnUserNotLoggedIn() {
-        log.warn("[ATMController] Could not deposit money as user is not logged in");
+    private void warnCustomerNotLoggedIn() {
+        log.warn("[ATMController] Could not deposit money as customer is not logged in");
     }
 
     private static void warnInvalidAmount() {
@@ -46,12 +46,12 @@ public class ATMController {
     public int withdrawMoney(int amountToWithdraw) {
         try {
             return atm.withdraw(amountToWithdraw);
-        } catch (UserNotLoggedInException e) {
-            warnUserNotLoggedIn();
+        } catch (CustomerNotLoggedInException e) {
+            warnCustomerNotLoggedIn();
         } catch (InvalidAmountException e) {
             warnInvalidAmount();
         } catch (NotEnoughBalanceException e) {
-            log.warn("[ATMController] Could not deposit money as user does not have enough balance");
+            log.warn("[ATMController] Could not deposit money as customer does not have enough balance");
         }
         return 0;
     }

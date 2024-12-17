@@ -1,7 +1,7 @@
-import exception.DifferentUserLoggedInException;
+import exception.DifferentCustomerLoggedInException;
 import exception.InvalidAmountException;
 import exception.NotEnoughBalanceException;
-import exception.UserNotLoggedInException;
+import exception.CustomerNotLoggedInException;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -9,70 +9,69 @@ import java.util.Objects;
 
 public class ATM {
 
-    // change to customers
-    private final HashMap<String, User> users;
+    private final HashMap<String, Customer> customers;
     @Getter
-    private User loggedInUser;
+    private Customer loggedInCustomer;
 
     ATM() {
-        this.users = new HashMap<>();
+        this.customers = new HashMap<>();
     }
 
-    public User loginUser(String username) throws DifferentUserLoggedInException {
-        if (Objects.isNull(this.loggedInUser)) {
-            return this.users.containsKey(username) ? getUser(username) : createNewUser(username);
+    public Customer loginCustomer(String customerName) throws DifferentCustomerLoggedInException {
+        if (Objects.isNull(this.loggedInCustomer)) {
+            return this.customers.containsKey(customerName) ? getCustomer(customerName) : createNewCustomer(customerName);
         }
-        if (Objects.equals(this.loggedInUser.getUsername(), username)) {
-            return this.loggedInUser;
+        if (Objects.equals(this.loggedInCustomer.getCustomerName(), customerName)) {
+            return this.loggedInCustomer;
         }
-        throw new DifferentUserLoggedInException();
+        throw new DifferentCustomerLoggedInException();
 
     }
 
-    private User getUser(String username) {
-        User user = this.users.get(username);
-        this.loggedInUser = user;
-        return user;
+    private Customer getCustomer(String customerName) {
+        Customer customer = this.customers.get(customerName);
+        this.loggedInCustomer = customer;
+        return customer;
     }
 
-    private User createNewUser(String username) {
-        User user = new User(username);
-        this.loggedInUser = user;
-        this.users.put(username, user);
-        return user;
+    private Customer createNewCustomer(String customerName) {
+        Customer customer = new Customer(customerName);
+        this.loggedInCustomer = customer;
+        this.customers.put(customerName, customer);
+        return customer;
     }
 
-    public User logoutUser(String username) throws UserNotLoggedInException, DifferentUserLoggedInException {
-        if (Objects.isNull(this.loggedInUser)) {
-            throw new UserNotLoggedInException();
+    public Customer logoutCustomer(String customerName) throws CustomerNotLoggedInException, DifferentCustomerLoggedInException {
+        if (Objects.isNull(this.loggedInCustomer)) {
+            throw new CustomerNotLoggedInException();
         }
-        if (Objects.equals(this.loggedInUser.getUsername(), username)) {
-            this.loggedInUser = null;
-            return this.users.get(username);
+        if (Objects.equals(this.loggedInCustomer.getCustomerName(), customerName)) {
+            this.loggedInCustomer = null;
+            return this.customers.get(customerName);
         }
-        throw new DifferentUserLoggedInException();
+        throw new DifferentCustomerLoggedInException();
     }
 
-    public int deposit(int amountToDeposit) throws UserNotLoggedInException, InvalidAmountException {
-        if (Objects.isNull(this.loggedInUser)) {
-            throw new UserNotLoggedInException();
+    public int deposit(int amountToDeposit) throws CustomerNotLoggedInException, InvalidAmountException {
+        if (Objects.isNull(this.loggedInCustomer)) {
+            throw new CustomerNotLoggedInException();
         }
         if (amountToDeposit < 1) {
             throw new InvalidAmountException();
         }
-        return this.loggedInUser.increaseBalance(amountToDeposit);
+        return this.loggedInCustomer.increaseBalance(amountToDeposit);
     }
 
-    public int withdraw(int amountToWithdraw) throws UserNotLoggedInException, InvalidAmountException, NotEnoughBalanceException {
-        if (Objects.isNull(this.loggedInUser)) {
-            throw new UserNotLoggedInException();
+    public int withdraw(int amountToWithdraw) throws CustomerNotLoggedInException, InvalidAmountException, NotEnoughBalanceException {
+        if (Objects.isNull(this.loggedInCustomer)) {
+            throw new CustomerNotLoggedInException();
         }
         if (amountToWithdraw < 1) {
             throw new InvalidAmountException();
         }
-        if (amountToWithdraw > this.loggedInUser.getBalance()) {
+        if (amountToWithdraw > this.loggedInCustomer.getBalance()) {
             throw new NotEnoughBalanceException();
         }
-        return this.loggedInUser.decreaseBalance(amountToWithdraw);
+        return this.loggedInCustomer.decreaseBalance(amountToWithdraw);
     }
 }

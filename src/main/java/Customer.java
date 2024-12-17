@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 @EqualsAndHashCode
-public class User {
-    private final String username;
+public class Customer {
+    private final String customerName;
     private int balance;
 
     public int increaseBalance(int amountToIncrease) {

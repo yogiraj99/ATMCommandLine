@@ -1,7 +1,7 @@
-import exception.DifferentUserLoggedInException;
+import exception.DifferentCustomerLoggedInException;
 import exception.InvalidAmountException;
 import exception.NotEnoughBalanceException;
-import exception.UserNotLoggedInException;
+import exception.CustomerNotLoggedInException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -12,117 +12,117 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ATMTest {
 
     @Test
-    void loginUserShouldGetUserWhenAlreadyLoggedInUserTryToLogin() {
-        String username = "ExistingUser";
+    void loginCustomerShouldGetCustomerWhenAlreadyLoggedInCustomerTryToLogin() {
+        String customerName = "ExistingCustomer";
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            User existingUser = atm.loginUser(username);
-            assertEquals(existingUser, atm.loginUser(username));
+            Customer existingCustomer = atm.loginCustomer(customerName);
+            assertEquals(existingCustomer, atm.loginCustomer(customerName));
         });
 
-        assertEquals(atm.getLoggedInUser().getUsername(), username);
+        assertEquals(atm.getLoggedInCustomer().getCustomerName(), customerName);
     }
 
     @Test
-    void loginUserShouldCreateUserWhenUserLoggingIn1StTime() {
-        String username = "NewUser";
+    void loginCustomerShouldCreateCustomerWhenCustomerLoggingIn1StTime() {
+        String customerName = "NewCustomer";
         ATM atm = new ATM();
-        User user = new User(username);
-        assertDoesNotThrow(() -> assertEquals(user, atm.loginUser(username)));
+        Customer customer = new Customer(customerName);
+        assertDoesNotThrow(() -> assertEquals(customer, atm.loginCustomer(customerName)));
 
-        assertEquals(atm.getLoggedInUser().getUsername(), username);
+        assertEquals(atm.getLoggedInCustomer().getCustomerName(), customerName);
     }
 
     @Test
-    void loginUserShouldGetUserWhenUserLoggingIn2NdTime() {
-        String username = "ExistingUser";
+    void loginCustomerShouldGetCustomerWhenCustomerLoggingIn2NdTime() {
+        String customerName = "ExistingCustomer";
         ATM atm = new ATM();
 
         assertDoesNotThrow(() -> {
-            User existingUser = atm.loginUser(username);
-            atm.logoutUser(username);
-            assertEquals(existingUser, atm.loginUser(username));
-            assertEquals(atm.getLoggedInUser().getUsername(), username);
+            Customer existingCustomer = atm.loginCustomer(customerName);
+            atm.logoutCustomer(customerName);
+            assertEquals(existingCustomer, atm.loginCustomer(customerName));
+            assertEquals(atm.getLoggedInCustomer().getCustomerName(), customerName);
         });
 
     }
 
     @Test
-    void logoutUserShouldRemoveUserFromLoggedInUser() {
-        String username = "ExistingUser";
+    void logoutCustomerShouldRemoveCustomerFromLoggedInCustomer() {
+        String customerName = "ExistingCustomer";
         ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginUser(username));
+        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
 
-        User expectedUser = new User(username);
-        assertDoesNotThrow(() -> assertEquals(expectedUser, atm.logoutUser(username)));
-        assertNull(atm.getLoggedInUser());
+        Customer expectedCustomer = new Customer(customerName);
+        assertDoesNotThrow(() -> assertEquals(expectedCustomer, atm.logoutCustomer(customerName)));
+        assertNull(atm.getLoggedInCustomer());
     }
 
     @Test
     void shouldThrowWhenLoggingOutWithoutLogin() {
-        String username = "ExistingUser";
+        String customerName = "ExistingCustomer";
         ATM atm = new ATM();
-        assertThrows(UserNotLoggedInException.class, () -> atm.logoutUser(username));
+        assertThrows(CustomerNotLoggedInException.class, () -> atm.logoutCustomer(customerName));
     }
 
     @Test
-    void shouldThrowWhenDifferentUserTriesToLogout() {
-        String username = "ExistingUser";
-        String differentUsername = "DifferentUser";
+    void shouldThrowWhenDifferentCustomerTriesToLogout() {
+        String customerName = "ExistingCustomer";
+        String differentcustomerName = "DifferentCustomer";
         ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginUser(username));
-        assertThrows(DifferentUserLoggedInException.class, () -> atm.logoutUser(differentUsername));
+        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
+        assertThrows(DifferentCustomerLoggedInException.class, () -> atm.logoutCustomer(differentcustomerName));
     }
 
     @Test
-    void shouldThrowWhenDifferentUserTriesToLoginBeforeExistingUserLoggingOut() {
-        String username = "ExistingUser";
-        String differentUsername = "DifferentUser";
+    void shouldThrowWhenDifferentCustomerTriesToLoginBeforeExistingCustomerLoggingOut() {
+        String customerName = "ExistingCustomer";
+        String differentcustomerName = "DifferentCustomer";
         ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginUser(username));
-        assertThrows(DifferentUserLoggedInException.class, () -> atm.loginUser(differentUsername));
+        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
+        assertThrows(DifferentCustomerLoggedInException.class, () -> atm.loginCustomer(differentcustomerName));
     }
 
     @Test
     void shouldThrowWhenTryingToDepositWithoutLogin() {
         ATM atm = new ATM();
-        assertThrows(UserNotLoggedInException.class, () -> atm.deposit(80));
+        assertThrows(CustomerNotLoggedInException.class, () -> atm.deposit(80));
     }
 
     @Test
-    void shouldDepositMoneyInUserAccount() {
-        String username = "NewUser";
+    void shouldDepositMoneyInCustomerAccount() {
+        String customerName = "NewCustomer";
         int amountToDeposit = 80;
 
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            atm.loginUser(username);
+            atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
-            assertEquals(amountToDeposit, atm.getLoggedInUser().getBalance());
+            assertEquals(amountToDeposit, atm.getLoggedInCustomer().getBalance());
         });
     }
 
     @Test
-    void shouldDepositMoneyMoreThanOnceForSameUser() {
-        String username = "NewUser";
+    void shouldDepositMoneyMoreThanOnceForSameCustomer() {
+        String customerName = "NewCustomer";
         int amountToDeposit = 53;
 
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            atm.loginUser(username);
+            atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
             atm.deposit(amountToDeposit);
-            assertEquals(2 * amountToDeposit, atm.getLoggedInUser().getBalance());
+            assertEquals(2 * amountToDeposit, atm.getLoggedInCustomer().getBalance());
         });
     }
 
     @Test
     void shouldThrowWhenDepositingZeroOrNegativeMoney() {
-        String username = "NewUser";
+        String customerName = "NewCustomer";
         int negativeAmount = -38;
 
         ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginUser(username));
+        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
         assertThrows(InvalidAmountException.class, () -> atm.deposit(0));
         assertThrows(InvalidAmountException.class, () -> atm.deposit(negativeAmount));
     }
@@ -130,28 +130,28 @@ class ATMTest {
     @Test
     void shouldThrowWhenTryingToWithdrawWithoutLogin() {
         ATM atm = new ATM();
-        assertThrows(UserNotLoggedInException.class, () -> atm.withdraw(80));
+        assertThrows(CustomerNotLoggedInException.class, () -> atm.withdraw(80));
     }
 
     @Test
     void shouldThrowWhenWithdrawingMoneyMoreThanAccountBalance() {
-        String username = "NewUser";
+        String customerName = "NewCustomer";
         int amountToWithdraw = 38;
 
         ATM atm = new ATM();
-        assertDoesNotThrow(() -> atm.loginUser(username));
+        assertDoesNotThrow(() -> atm.loginCustomer(customerName));
         assertThrows(NotEnoughBalanceException.class, () -> atm.withdraw(amountToWithdraw));
     }
 
     @Test
     void shouldThrowWhenWithdrawingZeroOrNegativeMoney() {
-        String username = "NewUser";
+        String customerName = "NewCustomer";
         int negativeAmount = -38;
         int randomAmountToDeposit = 56;
 
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            atm.loginUser(username);
+            atm.loginCustomer(customerName);
             atm.deposit(randomAmountToDeposit);
         });
         assertThrows(InvalidAmountException.class, () -> atm.withdraw(0));
@@ -159,28 +159,28 @@ class ATMTest {
     }
 
     @Test
-    void shouldWithdrawMoneyFromUserAccount() {
-        String username = "NewUser";
+    void shouldWithdrawMoneyFromCustomerAccount() {
+        String customerName = "NewCustomer";
         int amountToDeposit = 80;
         int amountToWithdraw = 50;
 
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            atm.loginUser(username);
+            atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
             assertEquals(amountToDeposit - amountToWithdraw, atm.withdraw(amountToWithdraw));
         });
     }
 
     @Test
-    void shouldWithdrawMoneyMoreThanOnceFromSameUser() {
-        String username = "NewUser";
+    void shouldWithdrawMoneyMoreThanOnceFromSameCustomer() {
+        String customerName = "NewCustomer";
         int amountToDeposit = 153;
         int amountToWithdraw = 47;
 
         ATM atm = new ATM();
         assertDoesNotThrow(() -> {
-            atm.loginUser(username);
+            atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
             atm.withdraw(amountToWithdraw);
             assertEquals(amountToDeposit - (2 * amountToWithdraw), atm.withdraw(amountToWithdraw));

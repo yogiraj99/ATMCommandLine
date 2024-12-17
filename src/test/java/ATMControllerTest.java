@@ -22,43 +22,43 @@ class ATMControllerTest {
 
     @SneakyThrows
     @Test
-    void shouldSayHelloWhenUserLogin() {
-        String username = "newUser";
+    void shouldSayHelloWhenCustomerLogin() {
+        String customerName = "newCustomer";
         ATM mockATM = new ATM();
         PrintStream printStream = Mockito.mock(PrintStream.class);
         Display display = new Display(printStream);
 
         ATMController atmController = new ATMController(mockATM, display);
-        atmController.loginUser(username);
+        atmController.loginCustomer(customerName);
 
         Mockito.verify(printStream).println(anyString());
     }
 
     @SneakyThrows
     @Test
-    void shouldSayGoodByeWhenUserLogout() {
-        String username = "newUser";
+    void shouldSayGoodByeWhenCustomerLogout() {
+        String customerName = "newCustomer";
         ATM atm = new ATM();
         PrintStream printStream = Mockito.mock(PrintStream.class);
         Display display = new Display(printStream);
 
         ATMController atmController = new ATMController(atm, display);
-        atmController.loginUser(username);
-        atmController.logoutUser(username);
+        atmController.loginCustomer(customerName);
+        atmController.logoutCustomer(customerName);
 
         Mockito.verify(printStream, Mockito.times(2)).println(anyString());
     }
 
     @Test
     void shouldDepositMoney() {
-        String username = "newUser";
+        String customerName = "newCustomer";
         int moneyToDeposit = 567;
         ATM atm = new ATM();
         PrintStream printStream = Mockito.mock(PrintStream.class);
         Display display = new Display(printStream);
         ATMController atmController = new ATMController(atm, display);
 
-        assertDoesNotThrow(() -> atmController.loginUser(username));
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
 
         int moneyDeposited = atmController.depositMoney(moneyToDeposit);
         assertEquals(moneyToDeposit, moneyDeposited);
@@ -83,17 +83,17 @@ class ATMControllerTest {
 
         System.err.flush();
         String output = byteArrayOutputStream.toString();
-        assertTrue(output.contains("Could not deposit money as user is not logged in"), "This method should warn");
+        assertTrue(output.contains("Could not deposit money as Customer is not logged in"), "This method should warn");
     }
 
     @Test
     void shouldWarnWhenDepositingMoneyZeroOrNegativeAmount() {
-        String username = "newUser";
+        String customerName = "newCustomer";
         int negativeAmount = -78;
         ATM atm = new ATM();
         Display display = new Display(printStream);
         ATMController atmController = new ATMController(atm, display);
-        assertDoesNotThrow(() -> atmController.loginUser(username));
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
 
         int moneyDeposited = atmController.depositMoney(0);
         assertEquals(0, moneyDeposited);
@@ -110,7 +110,7 @@ class ATMControllerTest {
 
     @Test
     void shouldWithdrawMoney() {
-        String username = "newUser";
+        String customerName = "newCustomer";
         int moneyToDeposit = 567;
         int moneyToWithdraw = 48;
         ATM atm = new ATM();
@@ -118,7 +118,7 @@ class ATMControllerTest {
         Display display = new Display(printStream);
         ATMController atmController = new ATMController(atm, display);
 
-        assertDoesNotThrow(() -> atmController.loginUser(username));
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.depositMoney(moneyToDeposit);
         assertEquals(moneyToDeposit - moneyToWithdraw, atmController.withdrawMoney(moneyToWithdraw));
 
@@ -138,18 +138,18 @@ class ATMControllerTest {
 
         System.err.flush();
         String output = byteArrayOutputStream.toString();
-        assertTrue(output.contains("Could not deposit money as user is not logged in"), "This method should warn");
+        assertTrue(output.contains("Could not deposit money as Customer is not logged in"), "This method should warn");
     }
 
     @Test
     void shouldWarnWhenWithdrawingMoneyZeroOrNegativeAmount() {
-        String username = "newUser";
+        String customerName = "newCustomer";
         int moneyToDeposit = 567;
         int negativeAmount = -78;
         ATM atm = new ATM();
         Display display = new Display(printStream);
         ATMController atmController = new ATMController(atm, display);
-        assertDoesNotThrow(() -> atmController.loginUser(username));
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.depositMoney(moneyToDeposit);
 
         int amountWithdrawn = atmController.withdrawMoney(0);
@@ -167,17 +167,17 @@ class ATMControllerTest {
 
     @Test
     void shouldWarnWhenWithdrawingMoneyMoreAmountThanAccountBalance() {
-        String username = "newUser";
+        String customerName = "newCustomer";
         int amountToWithdraw = 567;
         ATM atm = new ATM();
         Display display = new Display(printStream);
         ATMController atmController = new ATMController(atm, display);
-        assertDoesNotThrow(() -> atmController.loginUser(username));
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
 
         int amountWithdrawn = atmController.withdrawMoney(amountToWithdraw);
         assertEquals(0, amountWithdrawn);
         System.err.flush();
         String output = byteArrayOutputStream.toString();
-        assertTrue(output.contains("Could not deposit money as user does not have enough balance"), "This method should warn");
+        assertTrue(output.contains("Could not deposit money as customer does not have enough balance"), "This method should warn");
     }
 }
