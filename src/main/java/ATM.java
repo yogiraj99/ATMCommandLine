@@ -1,3 +1,4 @@
+import exception.CustomerDoesNotExistException;
 import exception.DifferentCustomerLoggedInException;
 import exception.InvalidAmountException;
 import exception.NotEnoughBalanceException;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 public class ATM {
 
+    @Getter
     private final HashMap<String, Customer> customers;
     @Getter
     private Customer loggedInCustomer;
@@ -73,5 +75,14 @@ public class ATM {
             throw new NotEnoughBalanceException();
         }
         return this.loggedInCustomer.decreaseBalance(amountToWithdraw);
+    }
+
+    public void transferMoney(int amountToTransfer, String transferTo) throws InvalidAmountException, CustomerNotLoggedInException, NotEnoughBalanceException, CustomerDoesNotExistException {
+        if (this.customers.containsKey(transferTo)) {
+            this.withdraw(amountToTransfer);
+            this.customers.get(transferTo).increaseBalance(amountToTransfer);
+            return;
+        }
+        throw new CustomerDoesNotExistException();
     }
 }

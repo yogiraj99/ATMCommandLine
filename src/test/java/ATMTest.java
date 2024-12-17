@@ -187,4 +187,27 @@ class ATMTest {
         });
     }
 
+    @Test
+    void shouldTransferMoneyFromOneCustomerAccountToOther() {
+        String customerName = "NewCustomer";
+        String anotherCustomerName = "AnotherCustomer";
+        int amountToDeposit = 80;
+        int amountToTransfer = 50;
+
+        ATM atm = new ATM();
+        assertDoesNotThrow(() -> {
+            atm.loginCustomer(customerName);
+            atm.deposit(amountToDeposit);
+            atm.logoutCustomer(customerName);
+
+            atm.loginCustomer(anotherCustomerName);
+            atm.logoutCustomer(anotherCustomerName);
+
+            atm.loginCustomer(customerName);
+            atm.transferMoney(amountToTransfer, anotherCustomerName);
+
+            assertEquals(amountToTransfer, atm.getCustomers().get(anotherCustomerName).getBalance());
+            assertEquals(amountToDeposit - amountToTransfer, atm.getCustomers().get(customerName).getBalance());
+        });
+    }
 }
