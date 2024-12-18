@@ -89,6 +89,9 @@ class ATMTest {
             atm.loginCustomer(customerName);
             atm.deposit(amountToDeposit);
             assertEquals(amountToDeposit, atm.getLoggedInCustomer().getBalance());
+            atm.logoutCustomer();
+            atm.deposit(amountToDeposit, customerName);
+            assertEquals(amountToDeposit + amountToDeposit, atm.getCustomers().get(customerName).getBalance());
         });
     }
 
@@ -174,6 +177,20 @@ class ATMTest {
             atm.deposit(amountToDeposit);
             atm.withdraw(amountToWithdraw);
             assertEquals(amountToDeposit - (2 * amountToWithdraw), atm.withdraw(amountToWithdraw));
+        });
+    }
+
+    @Test
+    void shouldWithdrawAll() {
+        String customerName = "NewCustomer";
+        int amountToDeposit = 80;
+
+        ATM atm = new ATM();
+        assertDoesNotThrow(() -> {
+            atm.loginCustomer(customerName);
+            atm.deposit(amountToDeposit);
+            assertEquals(amountToDeposit, atm.withdrawAll());
+            assertEquals(0, atm.getLoggedInCustomer().getBalance());
         });
     }
 

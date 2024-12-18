@@ -77,9 +77,24 @@ public class ATM {
 
     public int transferMoney(int amountToTransfer, String transferTo) throws InvalidAmountException, CustomerNotLoggedInException, NotEnoughBalanceException, CustomerDoesNotExistException {
         if (this.customers.containsKey(transferTo)) {
-            this.customers.get(transferTo).increaseBalance(amountToTransfer);
-            return this.withdraw(amountToTransfer);
+            int currentBalance = this.withdraw(amountToTransfer);
+            this.deposit(amountToTransfer, transferTo);
+            return currentBalance;
         }
         throw new CustomerDoesNotExistException();
+    }
+
+    public int withdrawAll() {
+        return this.loggedInCustomer.makeBalanceZero();
+    }
+
+    public void deposit(int amountToDeposit, String transferTo) {
+        Customer customer = this.customers.get(transferTo);
+        customer.increaseBalance(amountToDeposit);
+    }
+
+    public void oweMoney(String owedTo, int amountOwed) {
+        this.getLoggedInCustomer().addOwedTo(owedTo, amountOwed);
+        this.customers.get(owedTo).addOwedFrom(this.loggedInCustomer.getCustomerName(),amountOwed);
     }
 }

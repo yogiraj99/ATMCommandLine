@@ -4,6 +4,7 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -197,16 +198,49 @@ class ATMControllerTest {
         ATMController atmController = new ATMController(atm, display);
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.depositMoney(firstCustomerMoneyToDeposit);
-        assertDoesNotThrow(() -> atmController.logoutCustomer());
+        assertDoesNotThrow(atmController::logoutCustomer);
 
         assertDoesNotThrow(() -> atmController.loginCustomer(secondCustomerName));
         atmController.depositMoney(secondCustomerMoneyToDeposit);
-        assertDoesNotThrow(() -> atmController.logoutCustomer());
+        assertDoesNotThrow(atmController::logoutCustomer);
 
         assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
         atmController.transferMoney(amountToTransfer, secondCustomerName);
         assertEquals(secondCustomerMoneyToDeposit + amountToTransfer, atm.getCustomers().get(secondCustomerName).getBalance());
         assertEquals(firstCustomerMoneyToDeposit - amountToTransfer, atm.getCustomers().get(customerName).getBalance());
+    }
+
+    @Test
+    void shouldTransferMoneyAndOweTheRemainingMoney() {
+        String customerName = "customer";
+        String secondCustomerName = "secondCustomer";
+        int firstCustomerMoneyToDeposit = 80;
+        int amountToTransfer = 100;
+        ATM atm = new ATM();
+        PrintStream printStream = Mockito.mock(PrintStream.class);
+        Display display = new Display(printStream);
+
+        ATMController atmController = new ATMController(atm, display);
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
+        atmController.depositMoney(firstCustomerMoneyToDeposit);
+        assertDoesNotThrow(atmController::logoutCustomer);
+
+        assertDoesNotThrow(() -> atmController.loginCustomer(secondCustomerName));
+        assertDoesNotThrow(atmController::logoutCustomer);
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
+
+        atmController.transferMoney(amountToTransfer, secondCustomerName);
+        assertEquals(0, atm.getLoggedInCustomer().getBalance());
+        assertEquals(firstCustomerMoneyToDeposit, atm.getCustomers().get(secondCustomerName).getBalance());
+
+        HashMap<String, Integer> owedTo = new HashMap<>();
+        int amountOwed = amountToTransfer - firstCustomerMoneyToDeposit;
+        owedTo.put(secondCustomerName, amountOwed);
+        assertEquals(owedTo, atm.getLoggedInCustomer().getOwedTo());
+
+        HashMap<String, Integer> owedFrom = new HashMap<>();
+        owedFrom.put(customerName, amountOwed);
+        assertEquals(owedFrom, atm.getCustomers().get(secondCustomerName).getOwedFrom());
     }
 
 }

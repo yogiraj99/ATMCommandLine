@@ -50,7 +50,6 @@ public class ATMController {
 
     public int depositMoney(int moneyToDeposit) {
         try {
-            // need to check if owed to anyone
             int balance = atm.deposit(moneyToDeposit);
             display.showBalance(balance);
             return balance;
@@ -80,15 +79,16 @@ public class ATMController {
     public void transferMoney(int amountToTransfer, String transferTo) {
         try {
             int balance = atm.transferMoney(amountToTransfer, transferTo);
-            display.showTransferMessage(amountToTransfer,transferTo);
+            display.showTransferMessage(amountToTransfer, transferTo);
             display.showBalance(balance);
         } catch (InvalidAmountException e) {
             warnInvalidAmount("transfer");
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("transfer");
         } catch (NotEnoughBalanceException e) {
-            // transfer everything in account and owe the rest
-            logNotEnoughBalance("transfer");
+            int currentBalance = atm.withdrawAll();
+            atm.deposit(currentBalance, transferTo);
+            this.atm.oweMoney(transferTo, amountToTransfer - currentBalance);
         } catch (CustomerDoesNotExistException e) {
             log.warn("[ATMController] Could not transfer money as customer does not exist");
         }

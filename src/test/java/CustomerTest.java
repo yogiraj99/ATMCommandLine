@@ -54,4 +54,14 @@ class CustomerTest {
         assertEquals(amount - amountToDecrease - differentAmountToDecrease, customer.getBalance());
     }
 
+    @Test
+    void shouldMakeBalanceZero() {
+        Customer customer = new Customer("customerName");
+        int amount = 164;
+
+        customer.increaseBalance(amount);
+        assertEquals(amount, customer.makeBalanceZero());
+        assertEquals(0, customer.getBalance());
+    }
+
 }
