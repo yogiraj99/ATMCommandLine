@@ -51,7 +51,7 @@ public class ATMController {
     public int depositMoney(int moneyToDeposit) {
         try {
             int balance = atm.deposit(moneyToDeposit);
-            display.showBalance(balance);
+            display.showBalance(atm.getLoggedInCustomer());
             return balance;
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("deposit");
@@ -64,7 +64,7 @@ public class ATMController {
     public int withdrawMoney(int amountToWithdraw) {
         try {
             int balance = atm.withdraw(amountToWithdraw);
-            display.showBalance(balance);
+            display.showBalance(atm.getLoggedInCustomer());
             return balance;
         } catch (CustomerNotLoggedInException e) {
             warnCustomerNotLoggedIn("withdraw");
@@ -78,9 +78,8 @@ public class ATMController {
 
     public void transferMoney(int amountToTransfer, String transferTo) {
         try {
-            int balance = atm.transferMoney(amountToTransfer, transferTo);
-            display.showTransferMessage(amountToTransfer, transferTo);
-            display.showBalance(balance);
+            atm.transferMoney(amountToTransfer, transferTo);
+            display.showBalance(atm.getLoggedInCustomer());
         } catch (InvalidAmountException e) {
             warnInvalidAmount("transfer");
         } catch (CustomerNotLoggedInException e) {

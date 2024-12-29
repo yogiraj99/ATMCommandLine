@@ -67,7 +67,7 @@ class ATMControllerTest {
         assertEquals(totalMoneyToDeposit, actualMoneyDeposited);
 
         Mockito.verify(mockDisplay).sayHello(any());
-        Mockito.verify(mockDisplay).showBalance(moneyDeposited);
+        Mockito.verify(mockDisplay, Mockito.times(3)).showBalance(any());
     }
 
     @Test
@@ -124,8 +124,7 @@ class ATMControllerTest {
         assertEquals(remainingAmount, atmController.withdrawMoney(moneyToWithdraw));
 
         Mockito.verify(mockDisplay).sayHello(any());
-        Mockito.verify(mockDisplay).showBalance(moneyToDeposit);
-        Mockito.verify(mockDisplay).showBalance(remainingAmount);
+        Mockito.verify(mockDisplay, Mockito.times(3)).showBalance(any());
     }
 
     @Test
@@ -233,14 +232,47 @@ class ATMControllerTest {
         assertEquals(0, atm.getLoggedInCustomer().getBalance());
         assertEquals(firstCustomerMoneyToDeposit, atm.getCustomers().get(secondCustomerName).getBalance());
 
-        HashMap<String, Integer> owedTo = new HashMap<>();
+        HashMap<Customer, Integer> owedTo = new HashMap<>();
         int amountOwed = amountToTransfer - firstCustomerMoneyToDeposit;
-        owedTo.put(secondCustomerName, amountOwed);
+        Customer secondCustomer = new Customer(secondCustomerName);
+        secondCustomer.increaseBalance(firstCustomerMoneyToDeposit);
+        owedTo.put(secondCustomer, amountOwed);
         assertEquals(owedTo, atm.getLoggedInCustomer().getOwedTo());
 
-        HashMap<String, Integer> owedFrom = new HashMap<>();
-        owedFrom.put(customerName, amountOwed);
+        HashMap<Customer, Integer> owedFrom = new HashMap<>();
+        Customer firstCustomer = new Customer(customerName);
+        owedFrom.put(firstCustomer, amountOwed);
         assertEquals(owedFrom, atm.getCustomers().get(secondCustomerName).getOwedFrom());
+    }
+
+    @Test
+    void depositShouldTransferMoneyWhenOwedTo() {
+        String customerName = "customer";
+        String secondCustomerName = "secondCustomer";
+        int firstCustomerMoneyToDeposit = 80;
+        int amountToTransfer = 100;
+        ATM atm = new ATM();
+        PrintStream printStream = Mockito.mock(PrintStream.class);
+        Display display = new Display(printStream);
+
+        ATMController atmController = new ATMController(atm, display);
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
+        atmController.depositMoney(firstCustomerMoneyToDeposit);
+        assertDoesNotThrow(atmController::logoutCustomer);
+
+        assertDoesNotThrow(() -> atmController.loginCustomer(secondCustomerName));
+        assertDoesNotThrow(atmController::logoutCustomer);
+        assertDoesNotThrow(() -> atmController.loginCustomer(customerName));
+
+        atmController.transferMoney(amountToTransfer, secondCustomerName);
+
+        int amountOwed = amountToTransfer - firstCustomerMoneyToDeposit;
+        atmController.depositMoney(amountOwed);
+
+        assertEquals(0, atm.getLoggedInCustomer().getBalance());
+        assertEquals(amountToTransfer, atm.getCustomers().get(secondCustomerName).getBalance());
+        assertEquals(new HashMap<>(), atm.getLoggedInCustomer().getOwedTo());
+        assertEquals(new HashMap<>(), atm.getCustomers().get(secondCustomerName).getOwedFrom());
     }
 
 }

@@ -2,6 +2,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -19,10 +20,28 @@ public class Display {
 
     public void showBalance(Customer customer) {
         printStream.println("Your balance is $" + customer.getBalance());
+        if (customer.doesOwe()) {
+            this.showDebtOwed(customer);
+        }
+        if (customer.isOwedFrom()) {
+            this.showDebtOwedFrom(customer);
+        }
     }
 
-    public void showBalance(int balance) {
-        printStream.println("Your balance is $" + balance);
+    private void showDebtOwed(Customer customer) {
+        for (Map.Entry<Customer, Integer> check : customer.getOwedTo().entrySet()) {
+            Integer amountOwed = check.getValue();
+            Customer owedTo = check.getKey();
+            printStream.println("Owed " + amountOwed + " to " + owedTo.getCustomerName());
+        }
+    }
+
+    private void showDebtOwedFrom(Customer customer) {
+        for (Map.Entry<Customer, Integer> check : customer.getOwedFrom().entrySet()) {
+            Integer amountOwed = check.getValue();
+            Customer owedFrom = check.getKey();
+            printStream.println("Owed " + amountOwed + " from " + owedFrom.getCustomerName());
+        }
     }
 
     public void showTransferMessage(int amountToTransfer, String transferTo) {

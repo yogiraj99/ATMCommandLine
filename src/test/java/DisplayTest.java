@@ -39,14 +39,4 @@ class DisplayTest {
         Mockito.verify(mockPrintStream).println("Your balance is $" + balance);
     }
 
-    @Test
-    void shouldShowBalance() {
-        int balance = 320;
-        PrintStream mockPrintStream = Mockito.mock(PrintStream.class);
-        Display display = new Display(mockPrintStream);
-        display.showBalance(balance);
-
-        Mockito.verify(mockPrintStream).println("Your balance is $" + balance);
-    }
-
 }

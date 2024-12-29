@@ -59,7 +59,21 @@ public class ATM {
         if (amountToDeposit < 1) {
             throw new InvalidAmountException();
         }
-        return this.loggedInCustomer.increaseBalance(amountToDeposit);
+        int actualAmountToDeposit = amountToDeposit;
+        if (this.loggedInCustomer.doesOwe()) {
+            int totalDebt = this.loggedInCustomer.totalDebt();
+            if (totalDebt > amountToDeposit) {
+                this.settleDebt(amountToDeposit);
+                return this.loggedInCustomer.getBalance();
+            }
+            this.settleDebt(totalDebt);
+            actualAmountToDeposit = amountToDeposit - totalDebt;
+        }
+        return this.loggedInCustomer.increaseBalance(actualAmountToDeposit);
+    }
+
+    private void settleDebt(int amountToSettle) {
+        this.loggedInCustomer.settleDebt(amountToSettle);
     }
 
     public int withdraw(int amountToWithdraw) throws CustomerNotLoggedInException, InvalidAmountException, NotEnoughBalanceException {
@@ -94,7 +108,8 @@ public class ATM {
     }
 
     public void oweMoney(String owedTo, int amountOwed) {
-        this.getLoggedInCustomer().addOwedTo(owedTo, amountOwed);
-        this.customers.get(owedTo).addOwedFrom(this.loggedInCustomer.getCustomerName(),amountOwed);
+        Customer customer = this.customers.get(owedTo);
+        this.getLoggedInCustomer().addOwedTo(customer, amountOwed);
+        this.customers.get(owedTo).addOwedFrom(this.loggedInCustomer, amountOwed);
     }
 }
